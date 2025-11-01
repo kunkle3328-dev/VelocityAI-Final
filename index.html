@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VelocityStrategy AI - Sales Platform</title>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f2847 100%);
+  color: #e0e0e0;
+  overflow-x: hidden;
+}
+.container { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 250px;
+  background: rgba(15, 15, 40, 0.95);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(0, 212, 255, 0.2);
+  padding: 20px;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+}
+.sidebar-logo {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00d4ff, #9632ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 30px;
+}
+.sidebar-menu { list-style: none; }
+.sidebar-menu li { margin-bottom: 10px; }
+.sidebar-menu a {
+  display: block; padding: 12px 15px; color: #a0a0c0; text-decoration: none;
+  border-radius: 8px; transition: all 0.3s; cursor: pointer; border-left: 3px solid transparent;
+}
+.sidebar-menu a:hover, .sidebar-menu a.active {
+  color: #00d4ff; background: rgba(0, 212, 255, 0.1); border-left-color: #00d4ff;
+}
+.hamburger-toggle {
+  display: none; position: fixed; top: 20px; right: 20px;
+  flex-direction: column; gap: 5px; z-index: 150; cursor: pointer;
+}
+.hamburger-toggle span {
+  width: 25px; height: 3px; background: #00d4ff; border-radius: 2px; transition: all 0.3s;
+}
+.main-content { flex: 1; margin-left: 250px; padding: 30px; max-width: 100%; }
+.content-view { display: none; }
+.content-view.active { display: block; animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 30px; padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+.page-title { font-size: 32px; color: #e0e0e0; }
+.trial-badge {
+  background: rgba(255, 200, 0, 0.2);
+  border: 1px solid #ffc800;
+  color: #ffc800;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.btn {
+  background: linear-gradient(135deg, #00d4ff, #9632ff);
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn:hover { opacity: 0.8; }
+input, textarea {
+  width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,212,255,0.2);
+  background: rgba(255,255,255,0.05); color: #e0e0e0;
+  margin-bottom: 10px;
+}
+.card { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 20px; margin-top: 20px; }
+.metric-card {
+  display: inline-block;
+  width: 150px; padding: 15px; margin: 10px;
+  background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;
+}
+.metric-value { font-size: 24px; color: #00d4ff; }
+.metric-label { font-size: 14px; color: #a0a0c0; }
+</style>
+</head>
+<body>
+<div class="hamburger-toggle" id="hamburger">
+  <span></span><span></span><span></span>
+</div>
+
+<div class="container" id="container">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">VelocityStrategy</div>
+  <ul class="sidebar-menu">
+    <li><a onclick="switchView('dashboard')" class="nav-link active" data-view="dashboard">Dashboard</a></li>
+    <li><a onclick="switchView('ai-assistant')" class="nav-link" data-view="ai-assistant">AI Assistant</a></li>
+    <li><a onclick="switchView('sales-brief')" class="nav-link" data-view="sales-brief">📄 Sales Brief Gen</a></li>
+  </ul>
+</aside>
+
+<main class="main-content" id="mainContent">
+
+<!-- Dashboard -->
+<div class="content-view active" id="dashboard-view">
+  <div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
+    <div class="trial-badge" id="trialBadge">14-Day Free Trial</div>
+  </div>
+  <div class="metrics-grid">
+    <div class="metric-card"><div class="metric-value">1,247</div><div class="metric-label">Active Leads</div></div>
+    <div class="metric-card"><div class="metric-value">$3.2M</div><div class="metric-label">Pipeline Value</div></div>
+  </div>
+</div>
+
+<!-- AI Assistant -->
+<div class="content-view" id="ai-assistant-view">
+  <div class="page-header"><h1 class="page-title">AI Sales Assistant</h1></div>
+  <div class="card">
+    <div id="chatBox" style="height:400px;overflow-y:auto;background:rgba(0,0,0,0.2);border-radius:8px;padding:15px;margin-bottom:15px;">
+      <div style="color:#a0a0c0;text-align:center;padding:20px;">👋 Welcome! Ask me anything about your sales strategy.</div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <input type="text" id="chatInput" placeholder="Ask a question...">
+      <button class="btn" onclick="sendChatMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sales Brief Generator -->
+<div class="content-view" id="sales-brief-view">
+  <div class="page-header"><h1 class="page-title">📄 Sales Brief Generator</h1></div>
+  <div class="card">
+    <form onsubmit="generateSalesBrief(event)">
+      <label>Company Name</label>
+      <input type="text" id="companyName" required />
+      <label>Industry</label>
+      <input type="text" id="industry" required />
+      <label>Key Focus</label>
+      <textarea id="keyFocus" required></textarea>
+      <button type="submit" class="btn">Generate Brief</button>
+    </form>
+    <div id="briefResult"></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// === CONFIG ===
+const GEMINI_API_KEY = "AIzaSyC0nHQs0iXy9YxOXNEL1F5V2bE8KjzN5-Y"; // Replace this
+
+// === Gemini API Call ===
+async function callGeminiApi(prompt) {
+  const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + GEMINI_API_KEY;
+  const body = { contents: [{ parts: [{ text: prompt }] }] };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  const data = await res.json();
+  if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+    return data.candidates[0].content.parts[0].text;
+  } else {
+    throw new Error("No valid response from Gemini API");
+  }
+}
+
+// === Chat logic ===
+async function sendChatMessage() {
+  const input = document.getElementById("chatInput");
+  const message = input.value.trim();
+  if (!message) return;
+  const box = document.getElementById("chatBox");
+
+  box.innerHTML += `<div style="margin:10px 0;text-align:right;"><span style="background:rgba(0,212,255,0.2);padding:8px 12px;border-radius:8px;display:inline-block;">${message}</span></div>`;
+  input.value = "";
+
+  try {
+    const reply = await callGeminiApi(message);
+    box.innerHTML += `<div style="margin:10px 0;"><span style="background:rgba(150,50,255,0.2);padding:8px 12px;border-radius:8px;display:inline-block;">${reply}</span></div>`;
+  } catch (e) {
+    box.innerHTML += `<div style="color:#ff6666;">Error: ${e.message}</div>`;
+  }
+
+  box.scrollTop = box.scrollHeight;
+}
+
+// === Sales Brief Generator ===
+async function generateSalesBrief(e) {
+  e.preventDefault();
+  const name = document.getElementById("companyName").value.trim();
+  const industry = document.getElementById("industry").value.trim();
+  const focus = document.getElementById("keyFocus").value.trim();
+  const output = document.getElementById("briefResult");
+
+  output.innerHTML = "<p style='color:#00d4ff;'>Generating brief...</p>";
+
+  const prompt = `Generate a concise sales brief for ${name} in the ${industry} industry. Focus on ${focus}.`;
+
+  try {
+    const result = await callGeminiApi(prompt);
+    output.innerHTML = `<pre style="white-space:pre-wrap;color:#e0e0e0;">${result}</pre>`;
+  } catch (err) {
+    output.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+  }
+}
+
+// === UI Navigation ===
+function switchView(viewName) {
+  document.querySelectorAll(".content-view").forEach(v => v.classList.remove("active"));
+  document.getElementById(viewName + "-view").classList.add("active");
+  document.querySelectorAll(".nav-link").forEach(l => l.classList.remove("active"));
+  document.querySelector(`[data-view="${viewName}"]`).classList.add("active");
+}
+</script>
+</body>
+</html>
