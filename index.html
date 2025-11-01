@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VelocityStrategy AI - Sales Platform</title>
+<style>
+* { margin:0; padding:0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f2847 100%);
+  color: #e0e0e0; overflow-x: hidden;
+}
+.container {
+  display: flex; min-height: 100vh;
+}
+.sidebar {
+  width: 250px; background: rgba(15,15,40,0.95); backdrop-filter: blur(10px);
+  border-right:1px solid rgba(0,212,255,0.2); padding:20px; position: fixed;
+  height: 100vh; overflow-y:auto; z-index:100;
+}
+.sidebar-logo {
+  font-size:18px; font-weight:700;
+  background: linear-gradient(135deg, #00d4ff, #9632ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom:30px;
+}
+.sidebar-menu {
+  list-style:none;
+}
+.sidebar-menu li {
+  margin-bottom:10px;
+}
+.sidebar-menu a {
+  display: block; padding:12px 15px;
+  color:#a0a0c0; text-decoration:none;
+  border-radius:8px; transition: all 0.3s;
+  cursor: pointer; border-left: 3px solid transparent;
+}
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+  color:#00d4ff;
+  background: rgba(0,212,255,0.1);
+  border-left-color:#00d4ff;
+}
+.hamburger-toggle {
+  display:none; position: fixed; top: 20px; right: 20px;
+  flex-direction: column; gap: 5px; z-index:150;
+  cursor:pointer;
+}
+.hamburger-toggle span {
+  width: 25px; height: 3px; background: #00d4ff;
+  border-radius: 2px; transition: all 0.3s;
+}
+.hamburger-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(10px,10px);
+}
+.hamburger-toggle.active span:nth-child(2) {
+  opacity:0;
+}
+.hamburger-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px,-7px);
+}
+.main-content {
+  flex: 1; margin-left:250px; padding: 30px; max-width: 100%;
+}
+.content-view {
+  display: none;
+}
+.content-view.active {
+  display: block; animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+.page-header {
+  display:flex; justify-content: space-between; align-items:center;
+  margin-bottom: 30px; padding-bottom:20px;
+  border-bottom:1px solid rgba(0,212,255,0.2);
+}
+.page-title {
+  font-size: 32px; color:#e0e0e0;
+}
+.trial-badge {
+  background: rgba(255,200,0,0.2);
+  border: 1px solid #ffc800;
+  color: #ffc800;
+  padding: 8px 16px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+}
+.card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0,212,255,0.2);
+}
+.btn {
+  padding:12px 18px;
+  background: linear-gradient(135deg, #00d4ff, #9632ff);
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:14px;
+  transition: all 0.3s ease;
+}
+.btn:hover { filter:brightness(110%); }
+.form-group {
+  margin-bottom:15px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #a0a0c0;
+  font-weight: 600;
+  font-size: 14px;
+}
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,212,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: #e0e0e0;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 60px;
+}
+.spinner {
+  display: inline-block;
+  width:20px; height:20px;
+  border: 3px solid rgba(0,212,255,0.2);
+  border-top-color: #00d4ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg);}
+}
+</style>
+</head>
+<body>
+<div class="hamburger-toggle" id="hamburger"><span></span><span></span><span></span></div>
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">VelocityStrategy</div>
+    <ul class="sidebar-menu">
+      <li><a onclick="switchView('dashboard')" class="nav-link active" data-view="dashboard">Dashboard</a></li>
+      <li><a onclick="switchView('opportunities')" class="nav-link" data-view="opportunities">Opportunities</a></li>
+      <li><a onclick="switchView('insights')" class="nav-link" data-view="insights">AI Insights</a></li>
+      <li><a onclick="switchView('forecasting')" class="nav-link" data-view="forecasting">Forecasting</a></li>
+      <li><a onclick="switchView('analytics')" class="nav-link" data-view="analytics">Analytics</a></li>
+      <li><a onclick="switchView('ai-assistant')" class="nav-link" data-view="ai-assistant">AI Assistant</a></li>
+      <li style="border-top:1px solid rgba(0,212,255,0.2); margin-top:20px; padding-top:20px;">
+        <a onclick="switchView('sales-brief')" class="nav-link" data-view="sales-brief">📄 Sales Brief Gen</a>
+      </li>
+      <li><a onclick="switchView('deal-risk')" class="nav-link" data-view="deal-risk">⚠️ Deal Risk AI</a></li>
+      <li><a onclick="switchView('market-trends')" class="nav-link" data-view="market-trends">📈 Market Trends</a></li>
+      <li><a onclick="switchView('email-composer')" class="nav-link" data-view="email-composer">📧 Email Composer</a></li>
+      <li style="border-top:1px solid rgba(0,212,255,0.2); margin-top:20px; padding-top:20px;">
+        <a onclick="switchView('pricing')" class="nav-link" data-view="pricing">Pricing</a>
+      </li>
+      <li><a onclick="loginAsAdmin()" class="nav-link" data-view="admin">Admin Login</a></li>
+    </ul>
+  </aside>
+  <main class="main-content" id="mainContent">
+
+    <div class="content-view active" id="dashboard-view">
+      <div class="page-header"><h1 class="page-title">Dashboard</h1><div class="trial-badge" id="trialBadge">14-Day Free Trial</div></div>
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-value">1,247</div><div class="metric-label">Active Leads</div></div>
+        <div class="metric-card"><div class="metric-value">$3.2M</div><div class="metric-label">Pipeline Value</div></div>
+        <div class="metric-card"><div class="metric-value">94%</div><div class="metric-label">Forecast Accuracy</div></div>
+        <div class="metric-card"><div class="metric-value">32 days</div><div class="metric-label">Avg Deal Velocity</div></div>
+        <div class="metric-card"><div class="metric-value">38%</div><div class="metric-label">Win Rate</div></div>
+        <div class="metric-card"><div class="metric-value">23</div><div class="metric-label">At Risk</div></div>
+      </div>
+    </div>
+
+    <div class="content-view" id="opportunities-view">
+      <div class="page-header"><h1 class="page-title">Opportunities</h1></div>
+      <div id="opportunitiesList"></div>
+    </div>
+
+    <div class="content-view" id="insights-view">
+      <div class="page-header"><h1 class="page-title">AI Insights</h1></div>
+      <div id="insightsList"></div>
+    </div>
+
+    <div class="content-view" id="forecasting-view">
+      <div class="page-header"><h1 class="page-title">Forecasting</h1></div>
+      <div class="card">
+        <h3>Q4 Revenue Forecast</h3>
+        <div style="margin-top:20px;color:#a0a0c0;">
+          <p>Forecasted Revenue: <strong style="color:#00d4ff; font-size:24px;">$4.8M</strong></p>
+          <p>Confidence Level: 94% | Target: $4.5M</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Scenario Modeling</h3>
+        <div style="margin-top:20px;color:#a0a0c0;">
+          <p>Best Case: $5.2M</p>
+          <p>Most Likely: $4.8M</p>
+          <p>Conservative: $4.1M</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-view" id="analytics-view">
+      <div class="page-header"><h1 class="page-title">Analytics</h1></div>
+      <div class="card">
+        <h3>Conversion Funnel</h3>
+        <div style="margin-top:20px;color:#a0a0c0;">
+          <div style="margin-bottom:15px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span>Leads</span><span>1,247</span>
+            </div>
+            <div style="width:100%;height:25px;background:linear-gradient(90deg,#00d4ff,#9632ff);border-radius:4px;"></div>
+          </div>
+          <div style="margin-bottom:15px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span>Qualified</span><span>287 (23%)</span>
+            </div>
+            <div style="width:23%;height:25px;background:linear-gradient(90deg,#9632ff,#ff006e);border-radius:4px;"></div>
+          </div>
+          <div style="margin-bottom:15px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span>Closed Won</span><span>86 (8%)</span>
+            </div>
+            <div style="width:8%;height:25px;background:#44ff44;border-radius:4px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Top Performers</h3>
+        <div style="margin-top:20px;color:#a0a0c0;">
+          <div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid rgba(0,212,255,0.1);">
+            <span>Sales Rep</span><span>Deals Closed</span><span>Revenue</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px;">
+            <span>Alex Johnson</span><span style="color:#00d4ff;">12</span><span style="color:#44ff44;">$456K</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px;">
+            <span>Sarah Chen</span><span style="color:#00d4ff;">10</span><span style="color:#44ff44;">$398K</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-view" id="ai-assistant-view">
+      <div class="page-header"><h1 class="page-title">AI Sales Assistant</h1></div>
+      <div class="card">
+        <div id="chatBox" style="height:400px;overflow-y:auto;background:rgba(0,0,0,0.2);border-radius:8px;padding:15px;margin-bottom:15px;">
+          <div style="color:#a0a0c0;text-align:center;padding:20px;"><p>👋 Welcome! Ask me anything about your sales strategy.</p></div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <input type="text" id="chatInput" placeholder="Ask a question..." style="flex:1;">
+          <button class="btn" onclick="sendChatMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-view" id="sales-brief-view">
+      <div class="page-header"><h1 class="page-title">📄 Sales Brief Generator</h1></div>
+      <div class="card">
+        <form onsubmit="generateSalesBrief(event)">
+          <div class="form-group"><label>Company Name</label><input type="text" id="companyName" placeholder="e.g., Acme Corporation" required /></div>
+          <div class="form-group"><label>Industry</label><input type="text" id="industry" placeholder="e.g., Software, Finance" required /></div>
+          <div class="form-group"><label>Key Focus</label><textarea id="keyFocus" placeholder="What's important to this company?" required></textarea></div>
+          <button type="submit" class="btn">Generate Brief with AI</button>
+        </form>
+        <div id="briefResult"></div>
+      </div>
+    </div>
+
+    <!-- Additional views like Deal Risk, Market Trends, Email Composer, Pricing etc. can be added similarly -->
+
+  </main>
+</div>
+
+<script>
+const GEMINI_API_KEY = 'AIzaSyC0nHQs0iXy9YxOXNEL1F5V2bE8KjzN5-Y';
+
+const opportunities = [
+  { company: 'TechCorp Industries', value: 125000, stage: 'Proposal' },
+  { company: 'Global Dynamics Inc', value: 340000, stage: 'Negotiation' },
+  { company: 'Innovate Solutions', value: 89000, stage: 'Discovery' }
+];
+
+const insights = [
+  { type: 'Opportunity', message: '3 new accounts entering buying cycle' },
+  { type: 'Risk', message: 'Deal with Global Dynamics slowing down' },
+  { type: 'Strategic', message: 'Healthcare vertical showing 40% higher conversion' }
+];
+
+// Loaders
+function loadOpportunities() {
+  const container = document.getElementById('opportunitiesList');
+  container.innerHTML = opportunities.map(o => `
+    <div style="padding:10px; border-bottom:1px solid rgba(0,212,255,0.1);">
+      <strong>${o.company}</strong> - $${o.value.toLocaleString()} <em>(${o.stage})</em>
+    </div>
+  `).join('');
+}
+
+function loadInsights() {
+  const container = document.getElementById('insightsList');
+  container.innerHTML = insights.map(i => `
+    <div style="padding:10px; border-bottom:1px solid rgba(0,212,255,0.1);">
+      [${i.type}] ${i.message}
+    </div>
+  `).join('');
+}
+
+async function callGeminiApi(prompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }]
+  };
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+    return data.candidates[0].content.parts[0].text;
+  } else {
+    throw new Error('No valid response from Gemini API');
+  }
+}
+
+async function generateSalesBrief(event) {
+  event.preventDefault();
+  const company = document.getElementById('companyName').value;
+  const industry = document.getElementById('industry').value;
+  const keyFocus = document.getElementById('keyFocus').value;
+  const resultDiv = document.getElementById('briefResult');
+  resultDiv.innerHTML = '<div class="spinner"></div> <span style="color:#a0a0c0;">Generating brief...</span>';
+  try {
+    const prompt = `Generate a sales brief for ${company} in ${industry} industry focusing on ${keyFocus}. Include key points, objections, and next steps.`;
+    const briefText = await callGeminiApi(prompt);
+    resultDiv.innerHTML = `<pre style="white-space: pre-wrap;">${briefText}</pre>
+      <button class="btn copy-btn" onclick="copyToClipboard('${briefText.replace(/'/g,"\\'")}')">Copy Brief</button>`;
+  } catch (error) {
+    resultDiv.innerHTML = `<span style="color:#ff4444;">Error: ${error.message}</span>`;
+  }
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const chatBox = document.getElementById('chatBox');
+  chatBox.innerHTML += `<div style="text-align:right; margin:10px 0;">
+    <span style="background: rgba(0,212,255,0.2); padding: 8px 12px; border-radius: 8px; display: inline-block;">${msg}</span>
+    </div>`;
+  input.value = '';
+  setTimeout(() => {
+    chatBox.innerHTML += `<div style="margin: 10px 0;">
+      <span style="background: rgba(150,50,255,0.2); padding: 8px 12px; border-radius: 8px; display: inline-block;">
+      AI response to "${msg}" (simulated)
+      </span></div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 700);
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'));
+}
+
+function loginAsAdmin() {
+  window.location.href = 'admin.html';
+}
+
+function switchView(viewName) {
+  document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
+  const view = document.getElementById(`${viewName}-view`);
+  if (view) view.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+  const activeLink = document.querySelector(`[data-view="${viewName}"]`);
+  if (activeLink) activeLink.classList.add('active');
+
+  if (viewName === 'opportunities') loadOpportunities();
+  else if (viewName === 'insights') loadInsights();
+  else if (viewName === 'sales-brief') document.getElementById('briefResult').innerHTML = '';
+}
+
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('hamburger').classList.toggle('active');
+  document.getElementById('sidebar').classList.toggle('active');
+  document.getElementById('mainContent').classList.toggle('sidebar-open');
+});
+
+function updateTrialBadge() {
+  const trialEndStr = localStorage.getItem('velocitystrategy_trial_end');
+  if (!trialEndStr) return;
+  const now = new Date();
+  const trialEnd = new Date(trialEndStr);
+  const remainingDays = Math.ceil((trialEnd - now) / (1000 * 60 * 60 * 24));
+  const badge = document.getElementById('trialBadge');
+  if (badge) {
+    badge.textContent = `${remainingDays} Days Left - Free Trial`;
+    if (remainingDays <= 3) {
+      badge.style.background = 'rgba(255,68,68,0.2)';
+      badge.style.borderColor = '#ff4444';
+      badge.style.color = '#ff4444';
+    }
+  }
+}
+updateTrialBadge();
+setInterval(updateTrialBadge, 60000);
+</script>
+</body>
+</html>
