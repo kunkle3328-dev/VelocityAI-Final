@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VelocityStrategy AI - Predictive Sales Strategy Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f2847 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 200, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(150, 50, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Header & Navigation */
+        header {
+            position: relative;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 15, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #00d4ff;
+        }
+
+        .cta-button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            z-index: 105;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #00d4ff;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(10px, 10px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            nav {
+                position: fixed;
+                top: 60px;
+                right: -250px;
+                width: 250px;
+                height: calc(100vh - 60px);
+                background: rgba(15, 15, 40, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                gap: 0;
+                padding: 20px;
+                transition: right 0.3s;
+                border-left: 1px solid rgba(0, 212, 255, 0.2);
+            }
+
+            nav.active {
+                right: 0;
+            }
+
+            nav a {
+                padding: 15px;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            }
+
+            header {
+                padding: 15px 20px;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 100px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4ff, #9632ff, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #a0a0c0;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .primary-btn {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .secondary-btn {
+            padding: 16px 40px;
+            background: transparent;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            color: #00d4ff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 60px 20px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .primary-btn, .secondary-btn {
+                width: 100%;
+            }
+        }
+
+        /* Benefits Section */
+        .benefits {
+            position: relative;
+            z-index: 2;
+            padding: 80px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 60px;
+            color: #e0e0e0;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .benefit-card:hover {
+            border-color: #00d4ff;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .benefit-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #00d4ff;
+        }
+
+        .benefit-card p {
+            color: #a0a0c0;
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            position: relative;
+            z-index: 2;
+            padding: 80px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid #00d4ff;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'RECOMMENDED';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pricing-card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+
+        .price {
+            font-size: 48px;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .price-period {
+            color: #a0a0c0;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features {
+            text-align: left;
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            color: #a0a0c0;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .pricing-features li:before {
+            content: '✓ ';
+            color: #00d4ff;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        .pricing-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pricing-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        /* FAQ Section */
+        .faq {
+            position: relative;
+            z-index: 2;
+            padding: 80px 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #e0e0e0;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .faq-answer {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            color: #a0a0c0;
+            transition: all 0.3s;
+        }
+
+        .faq-answer.active {
+            padding: 20px;
+            max-height: 500px;
+        }
+
+        .toggle-icon {
+            color: #00d4ff;
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.active {
+            transform: rotate(180deg);
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 2;
+            background: rgba(15, 15, 40, 0.8);
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 40px;
+            text-align: center;
+            color: #a0a0c0;
+        }
+
+        @media (max-width: 768px) {
+            .benefits, .pricing, .faq {
+                padding: 40px 20px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">VelocityStrategy</div>
+        <nav id="nav">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>Predictive Sales Strategy Engine</h1>
+        <p>Empower your sales team with AI-driven insights that inform strategic decisions</p>
+        <div class="hero-buttons">
+            <button class="primary-btn" onclick="startFreeTrial()">Start Free 14-Day Trial</button>
+            <button class="secondary-btn" onclick="scrollTo('pricing')">View Pricing</button>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="features">
+        <h2 class="section-title">Why Choose VelocityStrategy</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <h3>🎯 Predictive Intelligence</h3>
+                <p>AI-powered scoring and forecasting that identifies opportunities before competitors</p>
+            </div>
+            <div class="benefit-card">
+                <h3>📊 Strategic Insights</h3>
+                <p>Real-time market analysis and opportunity identification with actionable recommendations</p>
+            </div>
+            <div class="benefit-card">
+                <h3>⚡ Deal Acceleration</h3>
+                <p>Identify risks early and accelerate deals through data-driven guidance</p>
+            </div>
+            <div class="benefit-card">
+                <h3>🤖 AI Assistant</h3>
+                <p>Conversational AI that provides instant research, meeting prep, and strategic guidance</p>
+            </div>
+            <div class="benefit-card">
+                <h3>📈 Forecast Precision</h3>
+                <p>95% accurate revenue forecasting with autonomous adjustments and scenario modeling</p>
+            </div>
+            <div class="benefit-card">
+                <h3>👥 Human-Centric</h3>
+                <p>AI advises, humans decide. Transparent reasoning and strategic guidance, not automation</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <h2 class="section-title">Simple, Transparent Pricing</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Starter</h3>
+                <div class="price">$49</div>
+                <div class="price-period">per month</div>
+                <ul class="pricing-features">
+                    <li>5 User Seats</li>
+                    <li>AI Lead Scoring</li>
+                    <li>Basic Analytics</li>
+                    <li>Email Integration</li>
+                    <li>Mobile App</li>
+                </ul>
+                <button class="pricing-btn" onclick="startFreeTrial()">Start Free Trial</button>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3>Professional</h3>
+                <div class="price">$149</div>
+                <div class="price-period">per month</div>
+                <ul class="pricing-features">
+                    <li>15 User Seats</li>
+                    <li>Advanced Forecasting</li>
+                    <li>AI Sales Assistant</li>
+                    <li>Custom Dashboards</li>
+                    <li>CRM Integration</li>
+                </ul>
+                <button class="pricing-btn" onclick="startFreeTrial()">Start Free Trial</button>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">$349</div>
+                <div class="price-period">per month</div>
+                <ul class="pricing-features">
+                    <li>Unlimited Seats</li>
+                    <li>Full Features</li>
+                    <li>API Access</li>
+                    <li>Custom Models</li>
+                    <li>Dedicated Support</li>
+                </ul>
+                <button class="pricing-btn" onclick="startFreeTrial()">Start Free Trial</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What's included in the 14-day free trial?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>The 14-day free trial includes full access to all Professional plan features, including AI Lead Scoring, Advanced Forecasting, AI Sales Assistant, custom dashboards, and full CRM integration.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Do you offer a money-back guarantee?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Yes! If you're not satisfied within the first 30 days, we offer a full refund. We're confident you'll see results.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Can I upgrade or downgrade anytime?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Absolutely! Change your plan at any time. Changes take effect immediately, and we'll prorate charges proportionally.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How does the AI training work?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Our AI learns from your historical data including CRM records, emails, and outcomes. The more data you have, the more accurate our predictions become over time.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Is my data secure?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Yes. All data is encrypted in transit and at rest. We comply with GDPR, SOC 2, and industry security standards.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 VelocityStrategy AI. All rights reserved. | Privacy Policy | Terms of Service</p>
+    </footer>
+
+    <script>
+        // Generate particles
+        function generateParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 20) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.getElementById('nav');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+
+        // Close menu when link clicked
+        document.querySelectorAll('#nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                nav.classList.remove('active');
+            });
+        });
+
+        // FAQ Toggle
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('.toggle-icon');
+            answer.classList.toggle('active');
+            icon.classList.toggle('active');
+        }
+
+        // Scroll to section
+        function scrollTo(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Start Free Trial
+        function startFreeTrial() {
+            const trialEndDate = new Date();
+            trialEndDate.setDate(trialEndDate.getDate() + 14);
+
+            localStorage.setItem('velocitystrategy_trial_start', new Date().toISOString());
+            localStorage.setItem('velocitystrategy_trial_end', trialEndDate.toISOString());
+            localStorage.setItem('velocitystrategy_user_plan', 'Professional');
+            localStorage.setItem('velocitystrategy_user_name', 'Trial User');
+
+            window.location.href = 'app.html';
+        }
+
+        // Initialize
+        generateParticles();
+    </script>
+</body>
+</html>
