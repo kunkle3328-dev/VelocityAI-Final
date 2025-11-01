@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VelocityStrategy AI - Sales Platform</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f2847 100%);
+  color: #e0e0e0;
+  overflow-x: hidden;
+}
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+/* Sidebar styles */
+.sidebar {
+  width: 250px;
+  background: rgba(15, 15, 40, 0.95);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(0, 212, 255, 0.2);
+  padding: 20px;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+}
+.sidebar-logo {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00d4ff, #9632ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 30px;
+}
+.sidebar-menu {
+  list-style: none;
+}
+.sidebar-menu li {
+  margin-bottom: 10px;
+}
+.sidebar-menu a {
+  display: block;
+  padding: 12px 15px;
+  color: #a0a0c0;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+  color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
+  border-left-color: #00d4ff;
+}
+.hamburger-toggle {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 150;
+  cursor: pointer;
+}
+.hamburger-toggle span {
+  width: 25px;
+  height: 3px;
+  background: #00d4ff;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.hamburger-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(10px, 10px);
+}
+.hamburger-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+.main-content {
+  flex: 1;
+  margin-left: 250px;
+  padding: 30px;
+  max-width: 100%;
+}
+.content-view {
+  display: none;
+}
+.content-view.active {
+  display: block;
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Page header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+.page-title {
+  font-size: 32px;
+  color: #e0e0e0;
+}
+.trial-badge {
+  background: rgba(255, 200, 0, 0.2);
+  border: 1px solid #ffc800;
+  color: #ffc800;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Add more CSS as needed */
+</style>
+</head>
+<body>
+<div class="hamburger-toggle" id="hamburger">
+  <span></span><span></span><span></span>
+</div>
+<div class="container" id="container">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">VelocityStrategy</div>
+    <ul class="sidebar-menu">
+      <li><a onclick="switchView('dashboard')" class="nav-link active" data-view="dashboard">Dashboard</a></li>
+      <li><a onclick="switchView('opportunities')" class="nav-link" data-view="opportunities">Opportunities</a></li>
+      <li><a onclick="switchView('insights')" class="nav-link" data-view="insights">AI Insights</a></li>
+      <li><a onclick="switchView('forecasting')" class="nav-link" data-view="forecasting">Forecasting</a></li>
+      <li><a onclick="switchView('analytics')" class="nav-link" data-view="analytics">Analytics</a></li>
+      <li><a onclick="switchView('ai-assistant')" class="nav-link" data-view="ai-assistant">AI Assistant</a></li>
+      <li style="border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 20px; padding-top: 20px;">
+        <a onclick="switchView('sales-brief')" class="nav-link" data-view="sales-brief">📄 Sales Brief Gen</a>
+      </li>
+      <li><a onclick="switchView('deal-risk')" class="nav-link" data-view="deal-risk">⚠️ Deal Risk AI</a></li>
+      <li><a onclick="switchView('market-trends')" class="nav-link" data-view="market-trends">📈 Market Trends</a></li>
+      <li><a onclick="switchView('email-composer')" class="nav-link" data-view="email-composer">📧 Email Composer</a></li>
+      <li style="border-top: 1px solid rgba(0, 212, 255, 0.2); margin-top: 20px; padding-top: 20px;">
+        <a onclick="switchView('pricing')" class="nav-link" data-view="pricing">Pricing</a>
+      </li>
+      <li><a onclick="loginAsAdmin()" class="nav-link" data-view="admin">Admin Login</a></li>
+    </ul>
+  </aside>
+  <main class="main-content" id="mainContent">
+    <!-- Add all content views here (dashboard, opportunities, AI features, etc.) -->
+  </main>
+</div>
+
+<script>
+const GEMINI_API_KEY = 'AIzaSyC0nHQs0iXy9YxOXNEL1F5V2bE8KjzN5-Y';
+
+async function callGeminiApi(prompt) {
+  const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + GEMINI_API_KEY;
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }]
+  };
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+    return data.candidates[0].content.parts[0].text;
+  } else {
+    throw new Error("No valid response from Gemini API");
+  }
+}
+
+async function generateSalesBrief(event) {
+  event.preventDefault();
+  const company = document.getElementById('companyName').value;
+  const industry = document.getElementById('industry').value;
+  const keyFocus = document.getElementById('keyFocus').value;
+  const resultDiv = document.getElementById('briefResult');
+  resultDiv.innerHTML = '<div class="spinner"></div> <span style="color:#a0a0c0;">Generating brief...</span>';
+  try {
+    const prompt = `Generate a sales brief for ${company} in ${industry} industry focusing on ${keyFocus}.`;
+    const responseText = await callGeminiApi(prompt);
+    resultDiv.innerHTML = `<pre style="white-space: pre-wrap;">${responseText}</pre><button class="btn copy-btn" onclick="copyToClipboard('${responseText.replace(/'/g,"\\'")}')">Copy Brief</button>`;
+  } catch (error) {
+    resultDiv.innerHTML = `<span style="color:#ff4444;">Error: ${error.message}</span>`;
+  }
+}
+
+// Implement other AI features similarly, e.g., deal risk, market trends, email composer
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'));
+}
+
+function loginAsAdmin() {
+  window.location.href = 'admin.html';
+}
+
+function switchView(view) {
+  document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
+  const element = document.getElementById(view + '-view');
+  if (element) element.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+  const activeLink = document.querySelector(`[data-view="${view}"]`);
+  if (activeLink) activeLink.classList.add('active');
+  // Closing sidebar on mobile after selection
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburger');
+  if (sidebar.classList.contains('active')) {
+    sidebar.classList.remove('active');
+    hamburger.classList.remove('active');
+  }
+}
+
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('hamburger').classList.toggle('active');
+  document.getElementById('sidebar').classList.toggle('active');
+  document.getElementById('mainContent').classList.toggle('sidebar-open');
+});
+
+function updateTrialBadge() {
+  const trialEnd = localStorage.getItem('velocitystrategy_trial_end');
+  if (!trialEnd) return;
+  const endDate = new Date(trialEnd);
+  const now = new Date();
+  const daysLeft = Math.ceil((endDate - now) / (1000 * 3600 * 24));
+  const badge = document.getElementById('trialBadge');
+  if (badge) {
+    badge.textContent = `${daysLeft} Days Left - Free Trial`;
+    if (daysLeft <= 3) {
+      badge.style.background = 'rgba(255,68,68,0.2)';
+      badge.style.borderColor = '#ff4444';
+      badge.style.color = '#ff4444';
+    }
+  }
+}
+
+updateTrialBadge();
+setInterval(updateTrialBadge, 60000);
+
+</script>
+</body>
+</html>
