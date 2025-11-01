@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VelocityStrategy AI - Admin Dashboard</title>
+    <title>VelocityStrategy AI - Predictive Sales Strategy Engine</title>
     <style>
         * {
             margin: 0;
@@ -12,332 +12,240 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f2847 100%);
             color: #e0e0e0;
+            overflow-x: hidden;
         }
 
-        /* Layout */
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background: rgba(15, 15, 40, 0.95);
-            backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(0, 212, 255, 0.2);
-            padding: 20px;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        .sidebar-logo {
-            font-size: 16px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #00d4ff, #9632ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 30px;
-        }
-
-        .admin-badge {
-            background: rgba(255, 68, 68, 0.2);
-            color: #ff4444;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: 8px;
-        }
-
-        .sidebar-menu a {
-            display: block;
-            padding: 12px 15px;
-            color: #a0a0c0;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s;
-            cursor: pointer;
-            border-left: 3px solid transparent;
-        }
-
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            color: #00d4ff;
-            background: rgba(0, 212, 255, 0.1);
-            border-left-color: #00d4ff;
-        }
-
-        .logout-btn {
-            margin-top: 30px;
-            padding: 12px;
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid rgba(255, 68, 68, 0.3);
-            color: #ff4444;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255, 68, 68, 0.2);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 30px;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .page-title {
-            font-size: 28px;
-            color: #e0e0e0;
-        }
-
-        /* Card */
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-
-        .card:hover {
-            border-color: #00d4ff;
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.15);
-        }
-
-        /* Table */
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: rgba(0, 212, 255, 0.05);
-            color: #00d4ff;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid rgba(0, 212, 255, 0.2);
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
-        }
-
-        tr:hover {
-            background: rgba(0, 212, 255, 0.05);
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 10px 15px;
-            background: linear-gradient(135deg, #00d4ff, #9632ff);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 13px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
-        }
-
-        .btn-danger {
-            background: rgba(255, 68, 68, 0.2);
-            border: 1px solid #ff4444;
-            color: #ff4444;
-        }
-
-        .btn-danger:hover {
-            background: rgba(255, 68, 68, 0.3);
-        }
-
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
-
-        /* Form */
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            color: #a0a0c0;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 6px;
-            color: #e0e0e0;
-            font-size: 13px;
-        }
-
-        .form-group input::placeholder {
-            color: #606080;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
+        /* Animated Background */
+        .animated-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 200, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(150, 50, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .modal.active {
-            display: flex;
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .modal-content {
-            background: rgba(15, 15, 40, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite;
         }
 
-        .modal-header {
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Header & Navigation */
+        header {
+            position: relative;
+            z-index: 100;
+            padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            background: rgba(15, 15, 40, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
         }
 
-        .modal-title {
-            font-size: 20px;
-            color: #e0e0e0;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: #a0a0c0;
+        .logo {
             font-size: 24px;
-            cursor: pointer;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        nav a {
+            color: #e0e0e0;
+            text-decoration: none;
             transition: color 0.3s;
         }
 
-        .close-btn:hover {
+        nav a:hover {
             color: #00d4ff;
         }
 
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        .cta-button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
         }
 
-        .stat-value {
-            font-size: 28px;
-            color: #00d4ff;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: #a0a0c0;
-        }
-
-        /* Status Badge */
-        .status-active {
-            background: rgba(68, 255, 68, 0.2);
-            color: #44ff44;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .status-inactive {
-            background: rgba(255, 68, 68, 0.2);
-            color: #ff4444;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        /* View */
-        .view {
+        /* Hamburger Menu */
+        .hamburger {
             display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            z-index: 105;
         }
 
-        .view.active {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #00d4ff;
+            border-radius: 2px;
+            transition: all 0.3s;
         }
 
-        @keyframes fadeIn {
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(10px, 10px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            nav {
+                position: fixed;
+                top: 60px;
+                right: -250px;
+                width: 250px;
+                height: calc(100vh - 60px);
+                background: rgba(15, 15, 40, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                gap: 0;
+                padding: 20px;
+                transition: right 0.3s;
+                border-left: 1px solid rgba(0, 212, 255, 0.2);
+            }
+
+            nav.active {
+                right: 0;
+            }
+
+            nav a {
+                padding: 15px;
+                border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            }
+
+            header {
+                padding: 15px 20px;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 100px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00d4ff, #9632ff, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #a0a0c0;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .primary-btn {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .secondary-btn {
+            padding: 16px 40px;
+            background: transparent;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            color: #00d4ff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -345,525 +253,500 @@
             }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-250px);
-                transition: transform 0.3s;
+            .hero {
+                padding: 60px 20px;
             }
 
-            .sidebar.active {
-                transform: translateX(0);
+            .hero h1 {
+                font-size: 36px;
             }
 
-            .main-content {
-                margin-left: 0;
-                padding: 15px;
+            .hero p {
+                font-size: 16px;
             }
 
-            .page-title {
-                font-size: 20px;
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .primary-btn, .secondary-btn {
+                width: 100%;
+            }
+        }
+
+        /* Benefits Section */
+        .benefits {
+            position: relative;
+            z-index: 2;
+            padding: 80px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 60px;
+            color: #e0e0e0;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .benefit-card:hover {
+            border-color: #00d4ff;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .benefit-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #00d4ff;
+        }
+
+        .benefit-card p {
+            color: #a0a0c0;
+            line-height: 1.6;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            position: relative;
+            z-index: 2;
+            padding: 80px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid #00d4ff;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'RECOMMENDED';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pricing-card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+
+        .price {
+            font-size: 48px;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .price-period {
+            color: #a0a0c0;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features {
+            text-align: left;
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            color: #a0a0c0;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .pricing-features li:before {
+            content: '✓ ';
+            color: #00d4ff;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        .pricing-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00d4ff, #9632ff);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pricing-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        /* FAQ Section */
+        .faq {
+            position: relative;
+            z-index: 2;
+            padding: 80px 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #e0e0e0;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .faq-answer {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            color: #a0a0c0;
+            transition: all 0.3s;
+        }
+
+        .faq-answer.active {
+            padding: 20px;
+            max-height: 500px;
+        }
+
+        .toggle-icon {
+            color: #00d4ff;
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.active {
+            transform: rotate(180deg);
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 2;
+            background: rgba(15, 15, 40, 0.8);
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 40px;
+            text-align: center;
+            color: #a0a0c0;
+        }
+
+        @media (max-width: 768px) {
+            .benefits, .pricing, .faq {
+                padding: 40px 20px;
             }
 
-            table {
-                font-size: 12px;
+            .section-title {
+                font-size: 28px;
             }
 
-            th, td {
-                padding: 10px;
+            .pricing-card.featured {
+                transform: scale(1);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-logo">VelocityStrategy</div>
-            <div class="admin-badge">👤 ADMIN</div>
-            <ul class="sidebar-menu">
-                <li><a onclick="switchView('dashboard')" class="nav-link active" data-view="dashboard">Dashboard</a></li>
-                <li><a onclick="switchView('users')" class="nav-link" data-view="users">User Management</a></li>
-                <li><a onclick="switchView('features')" class="nav-link" data-view="features">Feature Control</a></li>
-                <li><a onclick="switchView('plans')" class="nav-link" data-view="plans">Plan Management</a></li>
-                <li><a onclick="switchView('analytics')" class="nav-link" data-view="analytics">Analytics</a></li>
-                <li><a onclick="switchView('settings')" class="nav-link" data-view="settings">Settings</a></li>
-            </ul>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </aside>
+    <div class="animated-bg"></div>
+    <div class="particles" id="particles"></div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Login View -->
-            <div class="view active" id="login-view">
-                <div style="display: flex; align-items: center; justify-content: center; height: 100vh;">
-                    <div class="card" style="max-width: 400px; width: 100%;">
-                        <h2 style="text-align: center; margin-bottom: 30px;">Admin Login</h2>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="adminEmail" value="admin@velocitystrategy.ai">
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="adminPassword" value="demo123">
-                        </div>
-                        <button class="btn" onclick="adminLogin()" style="width: 100%; margin-top: 20px;">Login</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dashboard View -->
-            <div class="view" id="dashboard-view">
-                <div class="page-header">
-                    <h1 class="page-title">Admin Dashboard</h1>
-                    <span style="color: #a0a0c0;" id="adminName">Welcome, Admin</span>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalUsersCount">12</div>
-                        <div class="stat-label">Total Users</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="activeUsersCount">9</div>
-                        <div class="stat-label">Active Users</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">$1,847</div>
-                        <div class="stat-label">Monthly Revenue</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">85%</div>
-                        <div class="stat-label">System Health</div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3>Recent Activity</h3>
-                    <div style="margin-top: 15px;">
-                        <div style="padding: 10px; border-bottom: 1px solid rgba(0, 212, 255, 0.1); color: #a0a0c0;">
-                            ✓ User Sarah Chen upgraded to Enterprise plan
-                        </div>
-                        <div style="padding: 10px; border-bottom: 1px solid rgba(0, 212, 255, 0.1); color: #a0a0c0;">
-                            ✓ New user John Smith signed up for trial
-                        </div>
-                        <div style="padding: 10px; color: #a0a0c0;">
-                            ✓ AI Lead Scoring feature toggled for all users
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Users Management View -->
-            <div class="view" id="users-view">
-                <div class="page-header">
-                    <h1 class="page-title">User Management</h1>
-                    <button class="btn" onclick="openAddUserModal()">Add User</button>
-                </div>
-
-                <div class="card">
-                    <div class="table-container">
-                        <table id="usersTable">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Plan</th>
-                                    <th>Status</th>
-                                    <th>Joined</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTableBody">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Features Management View -->
-            <div class="view" id="features-view">
-                <div class="page-header">
-                    <h1 class="page-title">Feature Control</h1>
-                </div>
-
-                <div class="card">
-                    <h3 style="margin-bottom: 20px;">Global Feature Toggles</h3>
-                    <div id="featuresList"></div>
-                </div>
-            </div>
-
-            <!-- Plan Management View -->
-            <div class="view" id="plans-view">
-                <div class="page-header">
-                    <h1 class="page-title">Plan Management</h1>
-                </div>
-
-                <div class="card">
-                    <h3 style="margin-bottom: 20px;">User Plan Assignments</h3>
-                    <div class="table-container">
-                        <table id="plansTable">
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Current Plan</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="plansTableBody">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Analytics View -->
-            <div class="view" id="analytics-view">
-                <div class="page-header">
-                    <h1 class="page-title">Analytics</h1>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                    <div class="card">
-                        <h3>User Growth</h3>
-                        <div style="margin-top: 20px; color: #a0a0c0;">
-                            <p>Week 1: 3 users</p>
-                            <p>Week 2: 5 users</p>
-                            <p>Week 3: 8 users</p>
-                            <p>Week 4: 12 users</p>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>Plan Distribution</h3>
-                        <div style="margin-top: 20px; color: #a0a0c0;">
-                            <p>Starter: 3 users</p>
-                            <p>Professional: 7 users</p>
-                            <p>Enterprise: 2 users</p>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>Feature Usage</h3>
-                        <div style="margin-top: 20px; color: #a0a0c0;">
-                            <p>Lead Scoring: 11/12 users</p>
-                            <p>AI Assistant: 9/12 users</p>
-                            <p>Forecasting: 8/12 users</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Settings View -->
-            <div class="view" id="settings-view">
-                <div class="page-header">
-                    <h1 class="page-title">Settings</h1>
-                </div>
-
-                <div class="card">
-                    <h3 style="margin-bottom: 20px;">System Configuration</h3>
-                    <div class="form-group">
-                        <label>Platform Name</label>
-                        <input type="text" value="VelocityStrategy AI">
-                    </div>
-                    <div class="form-group">
-                        <label>Support Email</label>
-                        <input type="email" value="support@velocitystrategy.ai">
-                    </div>
-                    <div class="form-group">
-                        <label>Trial Duration (Days)</label>
-                        <input type="number" value="14">
-                    </div>
-                    <button class="btn" onclick="saveSettings()">Save Settings</button>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Add User Modal -->
-    <div class="modal" id="addUserModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Add New User</h2>
-                <button class="close-btn" onclick="closeAddUserModal()">×</button>
-            </div>
-            <form onsubmit="saveNewUser(event)">
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" id="newUserName" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="newUserEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Plan</label>
-                    <select id="newUserPlan" required>
-                        <option>Starter</option>
-                        <option>Professional</option>
-                        <option>Enterprise</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn" style="width: 100%;">Create User</button>
-            </form>
+    <!-- Header -->
+    <header>
+        <div class="logo">VelocityStrategy</div>
+        <nav id="nav">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
-    </div>
+    </header>
 
-    <!-- Edit User Modal -->
-    <div class="modal" id="editUserModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Edit User</h2>
-                <button class="close-btn" onclick="closeEditUserModal()">×</button>
-            </div>
-            <form onsubmit="saveEditUser(event)">
-                <div class="form-group">
-                    <label>Plan</label>
-                    <select id="editUserPlan" required>
-                        <option>Starter</option>
-                        <option>Professional</option>
-                        <option>Enterprise</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="editUserStatus" required>
-                        <option>Active</option>
-                        <option>Inactive</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn" style="width: 100%;">Save Changes</button>
-            </form>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>Predictive Sales Strategy Engine</h1>
+        <p>Empower your sales team with AI-driven insights that inform strategic decisions</p>
+        <div class="hero-buttons">
+            <button class="primary-btn" onclick="startFreeTrial()">Start Free 14-Day Trial</button>
+            <button class="secondary-btn" onclick="scrollTo('pricing')">View Pricing</button>
         </div>
-    </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="features">
+        <h2 class="section-title">Why Choose VelocityStrategy</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <h3>🎯 Predictive Intelligence</h3>
+                <p>AI-powered scoring and forecasting that identifies opportunities before competitors</p>
+            </div>
+            <div class="benefit-card">
+                <h3>📊 Strategic Insights</h3>
+                <p>Real-time market analysis and opportunity identification with actionable recommendations</p>
+            </div>
+            <div class="benefit-card">
+                <h3>⚡ Deal Acceleration</h3>
+                <p>Identify risks early and accelerate deals through data-driven guidance</p>
+            </div>
+            <div class="benefit-card">
+                <h3>🤖 AI Assistant</h3>
+                <p>Conversational AI that provides instant research, meeting prep, and strategic guidance</p>
+            </div>
+            <div class="benefit-card">
+                <h3>📈 Forecast Precision</h3>
+                <p>95% accurate revenue forecasting with autonomous adjustments and scenario modeling</p>
+            </div>
+            <div class="benefit-card">
+                <h3>👥 Human-Centric</h3>
+                <p>AI advises, humans decide. Transparent reasoning and strategic guidance, not automation</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <h2 class="section-title">Simple, Transparent Pricing</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Starter</h3>
+                <div class="price">$49</div>
+                <div class="price-period">per month</div>
+                <ul class="pricing-features">
+                    <li>5 User Seats</li>
+                    <li>AI Lead Scoring</li>
+                    <li>Basic Analytics</li>
+                    <li>Email Integration</li>
+                    <li>Mobile App</li>
+                </ul>
+                <button class="pricing-btn" onclick="startFreeTrial()">Start Free Trial</button>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3>Professional</h3>
+                <div class="price">$149</div>
+                <div class="price-period">per month</div>
+                <ul class="pricing-features">
+                    <li>15 User Seats</li>
+                    <li>Advanced Forecasting</li>
+                    <li>AI Sales Assistant</li>
+                    <li>Custom Dashboards</li>
+                    <li>CRM Integration</li>
+                </ul>
+                <button class="pricing-btn" onclick="startFreeTrial()">Start Free Trial</button>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">$349</div>
+                <div class="price-period">per month</div>
+                <ul class="pricing-features">
+                    <li>Unlimited Seats</li>
+                    <li>Full Features</li>
+                    <li>API Access</li>
+                    <li>Custom Models</li>
+                    <li>Dedicated Support</li>
+                </ul>
+                <button class="pricing-btn" onclick="startFreeTrial()">Start Free Trial</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>What's included in the 14-day free trial?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>The 14-day free trial includes full access to all Professional plan features, including AI Lead Scoring, Advanced Forecasting, AI Sales Assistant, custom dashboards, and full CRM integration.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Do you offer a money-back guarantee?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Yes! If you're not satisfied within the first 30 days, we offer a full refund. We're confident you'll see results.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Can I upgrade or downgrade anytime?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Absolutely! Change your plan at any time. Changes take effect immediately, and we'll prorate charges proportionally.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>How does the AI training work?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Our AI learns from your historical data including CRM records, emails, and outcomes. The more data you have, the more accurate our predictions become over time.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                <span>Is my data secure?</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="faq-answer">
+                <p>Yes. All data is encrypted in transit and at rest. We comply with GDPR, SOC 2, and industry security standards.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 VelocityStrategy AI. All rights reserved. | Privacy Policy | Terms of Service</p>
+    </footer>
 
     <script>
-        // Initialize data
-        let adminLoggedIn = false;
-        let currentEditingUserId = null;
-
-        let users = [
-            { id: 1, name: 'John Sales', email: 'john@company.com', plan: 'Professional', status: 'Active', joined: '2025-10-15' },
-            { id: 2, name: 'Sarah Manager', email: 'sarah@company.com', plan: 'Enterprise', status: 'Active', joined: '2025-10-16' },
-            { id: 3, name: 'Mike Rep', email: 'mike@company.com', plan: 'Starter', status: 'Active', joined: '2025-10-17' }
-        ];
-
-        let features = [
-            { name: 'Lead Scoring', enabled: true },
-            { name: 'AI Assistant', enabled: true },
-            { name: 'Forecasting', enabled: true },
-            { name: 'Market Intelligence', enabled: true },
-            { name: 'Email Composer', enabled: true },
-            { name: 'Deal Risk Analysis', enabled: true }
-        ];
-
-        // Admin login
-        function adminLogin() {
-            const email = document.getElementById('adminEmail').value;
-            const password = document.getElementById('adminPassword').value;
-
-            if (email === 'admin@velocitystrategy.ai' && password === 'demo123') {
-                adminLoggedIn = true;
-                localStorage.setItem('adminLoggedIn', 'true');
-                document.getElementById('login-view').classList.remove('active');
-                document.getElementById('dashboard-view').classList.add('active');
-                loadDashboard();
-                document.querySelector('[data-view="dashboard"]').classList.add('active');
-            } else {
-                alert('Invalid credentials');
+        // Generate particles
+        function generateParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 20) + 's';
+                container.appendChild(particle);
             }
         }
 
-        // Check if admin is logged in
-        function checkAdminLogin() {
-            if (localStorage.getItem('adminLoggedIn') === 'true') {
-                adminLoggedIn = true;
-                document.getElementById('login-view').classList.remove('active');
-                document.getElementById('dashboard-view').classList.add('active');
-                loadDashboard();
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.getElementById('nav');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+
+        // Close menu when link clicked
+        document.querySelectorAll('#nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                nav.classList.remove('active');
+            });
+        });
+
+        // FAQ Toggle
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('.toggle-icon');
+            answer.classList.toggle('active');
+            icon.classList.toggle('active');
+        }
+
+        // Scroll to section
+        function scrollTo(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
             }
         }
 
-        // Logout
-        function logout() {
-            adminLoggedIn = false;
-            localStorage.removeItem('adminLoggedIn');
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('login-view').classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        }
+        // Start Free Trial
+        function startFreeTrial() {
+            const trialEndDate = new Date();
+            trialEndDate.setDate(trialEndDate.getDate() + 14);
 
-        // Switch view
-        function switchView(viewName) {
-            if (!adminLoggedIn) {
-                alert('Please login first');
-                return;
-            }
+            localStorage.setItem('velocitystrategy_trial_start', new Date().toISOString());
+            localStorage.setItem('velocitystrategy_trial_end', trialEndDate.toISOString());
+            localStorage.setItem('velocitystrategy_user_plan', 'Professional');
+            localStorage.setItem('velocitystrategy_user_name', 'Trial User');
 
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewName + '-view').classList.add('active');
-
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
-
-            // Load specific view data
-            if (viewName === 'users') {
-                loadUsers();
-            } else if (viewName === 'features') {
-                loadFeatures();
-            } else if (viewName === 'plans') {
-                loadPlans();
-            } else if (viewName === 'dashboard') {
-                loadDashboard();
-            }
-        }
-
-        // Load dashboard
-        function loadDashboard() {
-            document.getElementById('totalUsersCount').textContent = users.length;
-            document.getElementById('activeUsersCount').textContent = users.filter(u => u.status === 'Active').length;
-            document.getElementById('adminName').textContent = 'Welcome, Admin';
-        }
-
-        // Load users
-        function loadUsers() {
-            const tbody = document.getElementById('usersTableBody');
-            tbody.innerHTML = users.map(user => `
-                <tr>
-                    <td>${user.name}</td>
-                    <td>${user.email}</td>
-                    <td>${user.plan}</td>
-                    <td><span class="${user.status === 'Active' ? 'status-active' : 'status-inactive'}">${user.status}</span></td>
-                    <td>${user.joined}</td>
-                    <td>
-                        <button class="btn btn-small" onclick="openEditUserModal(${user.id})">Edit</button>
-                        <button class="btn btn-danger btn-small" onclick="deleteUser(${user.id})">Delete</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Load features
-        function loadFeatures() {
-            const list = document.getElementById('featuresList');
-            list.innerHTML = features.map((feature, index) => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(0, 212, 255, 0.1);">
-                    <span>${feature.name}</span>
-                    <label style="position: relative; display: inline-block; width: 50px; height: 25px;">
-                        <input type="checkbox" ${feature.enabled ? 'checked' : ''} onchange="toggleFeature(${index})" style="opacity: 0; width: 0; height: 0;">
-                        <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: ${feature.enabled ? '#00d4ff' : '#606080'}; border-radius: 25px; transition: 0.3s;"></span>
-                        <span style="position: absolute; content: ''; height: 19px; width: 19px; left: ${feature.enabled ? '27px' : '3px'}; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.3s;"></span>
-                    </label>
-                </div>
-            `).join('');
-        }
-
-        // Load plans
-        function loadPlans() {
-            const tbody = document.getElementById('plansTableBody');
-            tbody.innerHTML = users.map(user => `
-                <tr>
-                    <td>${user.name}</td>
-                    <td>${user.plan}</td>
-                    <td>
-                        <button class="btn btn-small" onclick="openEditUserModal(${user.id})">Change Plan</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Open add user modal
-        function openAddUserModal() {
-            document.getElementById('addUserModal').classList.add('active');
-        }
-
-        // Close add user modal
-        function closeAddUserModal() {
-            document.getElementById('addUserModal').classList.remove('active');
-        }
-
-        // Save new user
-        function saveNewUser(event) {
-            event.preventDefault();
-            const name = document.getElementById('newUserName').value;
-            const email = document.getElementById('newUserEmail').value;
-            const plan = document.getElementById('newUserPlan').value;
-
-            const newUser = {
-                id: users.length + 1,
-                name: name,
-                email: email,
-                plan: plan,
-                status: 'Active',
-                joined: new Date().toISOString().split('T')[0]
-            };
-
-            users.push(newUser);
-            localStorage.setItem('adminUsers', JSON.stringify(users));
-            closeAddUserModal();
-            loadUsers();
-            loadDashboard();
-            alert('User added successfully');
-        }
-
-        // Open edit user modal
-        function openEditUserModal(userId) {
-            currentEditingUserId = userId;
-            const user = users.find(u => u.id === userId);
-            document.getElementById('editUserPlan').value = user.plan;
-            document.getElementById('editUserStatus').value = user.status;
-            document.getElementById('editUserModal').classList.add('active');
-        }
-
-        // Close edit user modal
-        function closeEditUserModal() {
-            document.getElementById('editUserModal').classList.remove('active');
-        }
-
-        // Save edited user
-        function saveEditUser(event) {
-            event.preventDefault();
-            const user = users.find(u => u.id === currentEditingUserId);
-            user.plan = document.getElementById('editUserPlan').value;
-            user.status = document.getElementById('editUserStatus').value;
-            localStorage.setItem('adminUsers', JSON.stringify(users));
-            closeEditUserModal();
-            loadUsers();
-            loadPlans();
-            loadDashboard();
-            alert('User updated successfully');
-        }
-
-        // Delete user
-        function deleteUser(userId) {
-            if (confirm('Are you sure you want to delete this user?')) {
-                users = users.filter(u => u.id !== userId);
-                localStorage.setItem('adminUsers', JSON.stringify(users));
-                loadUsers();
-                loadPlans();
-                loadDashboard();
-                alert('User deleted successfully');
-            }
-        }
-
-        // Toggle feature
-        function toggleFeature(index) {
-            features[index].enabled = !features[index].enabled;
-            localStorage.setItem('adminFeatures', JSON.stringify(features));
-            alert(`${features[index].name} ${features[index].enabled ? 'enabled' : 'disabled'}`);
-        }
-
-        // Save settings
-        function saveSettings() {
-            alert('Settings saved successfully');
+            window.location.href = 'index.html';
         }
 
         // Initialize
-        checkAdminLogin();
+        generateParticles();
     </script>
 </body>
 </html>
